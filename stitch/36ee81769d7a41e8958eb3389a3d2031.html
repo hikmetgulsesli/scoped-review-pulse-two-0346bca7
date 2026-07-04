@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Status Utility - Scoped Review Pulse Two</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#0054d6",
+                      "secondary": "#505f76",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#263143",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-fixed": "#001849",
+                      "outline-variant": "#c2c6d8",
+                      "surface-bright": "#f9f9ff",
+                      "primary-container": "#0066ff",
+                      "surface-dim": "#cfdaf2",
+                      "surface": "#f9f9ff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-error-container": "#93000a",
+                      "on-secondary": "#ffffff",
+                      "surface-container-highest": "#d8e3fb",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "on-primary-container": "#f8f7ff",
+                      "inverse-primary": "#b3c5ff",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-tertiary-container": "#e1ffec",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "on-secondary-container": "#54647a",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "background": "#f9f9ff",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#111c2d",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "surface-container": "#e7eeff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface": "#111c2d",
+                      "primary-fixed": "#dae1ff",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "surface-container-low": "#f0f3ff",
+                      "tertiary-fixed": "#6ffbbe",
+                      "on-tertiary-fixed": "#002113",
+                      "outline": "#727687",
+                      "primary": "#0050cb",
+                      "surface-container-high": "#dee8ff",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#008259",
+                      "tertiary": "#006645",
+                      "on-surface-variant": "#424656"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "24px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "gutter": "12px",
+                      "margin": "16px",
+                      "base": "4px",
+                      "md": "12px",
+                      "lg": "16px"
+              },
+              "fontFamily": {
+                      "timestamp": ["JetBrains Mono"],
+                      "headline-md": ["Geist"],
+                      "body-xs": ["Geist"],
+                      "display": ["Geist"],
+                      "label-mono": ["JetBrains Mono"],
+                      "body-sm": ["Geist"]
+              },
+              "fontSize": {
+                      "timestamp": ["10px", {"lineHeight": "12px", "fontWeight": "400"}],
+                      "headline-md": ["18px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-xs": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "display": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "label-mono": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .status-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* Tonal Layer 1 - Tiles */
+        .card-tile { border: 1px solid theme('colors.outline-variant'); background-color: theme('colors.surface-container-lowest'); }
+        .tile-active { border-left: 4px solid theme('colors.tertiary'); }
+        .tile-processing { border-left: 4px solid theme('colors.primary'); }
+        /* Instant Toggle transition */
+        .toggle-instant { transition-duration: 100ms; }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-full flex flex-col items-center justify-center p-margin">
+<!-- Utility Board Container -->
+<main class="w-full max-w-[480px] flex flex-col gap-md">
+<!-- Header -->
+<header class="flex justify-between items-center pb-sm border-b border-outline-variant">
+<div>
+<h1 class="font-display text-display text-on-surface">Scoped Review Pulse Two</h1>
+<p class="font-timestamp text-timestamp text-secondary mt-xs flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary inline-block status-pulse"></span>
+                    Utility Board Active
+                </p>
+</div>
+</header>
+<!-- Status Tiles (Bento-style dense layout) -->
+<section class="grid grid-cols-2 gap-sm">
+<!-- Tile 1: System Health -->
+<div class="card-tile tile-active rounded-DEFAULT p-sm flex flex-col gap-sm col-span-2">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]">health_and_safety</span>
+<span class="font-label-mono text-label-mono uppercase">System Health</span>
+</div>
+<span class="font-timestamp text-timestamp text-tertiary bg-tertiary-container text-on-tertiary-container px-1 py-0.5 rounded-sm">Stable</span>
+</div>
+<div class="font-headline-md text-headline-md">Optimal Performance</div>
+<div class="font-timestamp text-timestamp text-secondary">Latency: 12ms</div>
+</div>
+<!-- Tile 2: Connectivity -->
+<div class="card-tile tile-active rounded-DEFAULT p-sm flex flex-col gap-sm">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]">wifi</span>
+<span class="font-label-mono text-label-mono uppercase">Connectivity</span>
+</div>
+<div class="font-headline-md text-headline-md">Active</div>
+<div class="font-timestamp text-timestamp text-secondary">Uplink: 1.2Gbps</div>
+</div>
+<!-- Tile 3: Database Sync -->
+<div class="card-tile tile-processing rounded-DEFAULT p-sm flex flex-col gap-sm">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span class="font-label-mono text-label-mono uppercase">Database Sync</span>
+</div>
+<div class="font-headline-md text-headline-md">Syncing</div>
+<div class="font-timestamp text-timestamp text-secondary">Queue: 42 ops</div>
+</div>
+</section>
+<!-- Controls Area -->
+<section class="flex flex-col gap-sm mt-xs">
+<div class="flex items-center justify-between card-tile rounded-DEFAULT p-sm">
+<span class="font-body-sm text-body-sm text-on-surface">System Status</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="statusToggle" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 toggle-instant peer-checked:bg-primary"></div>
+<span class="ml-2 font-label-mono text-label-mono text-secondary" id="toggleLabel">Ready</span>
+</label>
+</div>
+<div class="flex items-center gap-sm mt-sm">
+<button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-mono text-label-mono uppercase h-[32px] px-md rounded-DEFAULT flex items-center justify-center gap-xs transition-colors active:scale-95 flex-1" id="refreshBtn">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">refresh</span>
+                    Refresh
+                </button>
+<div class="flex flex-col items-end justify-center min-w-[120px]">
+<span class="font-label-mono text-label-mono text-secondary">Last Updated</span>
+<span class="font-timestamp text-timestamp text-on-surface" id="timestampDisplay">14:32:05 UTC</span>
+</div>
+</div>
+<!-- Feedback Area -->
+<div class="mt-xs p-sm bg-surface-container-low border border-outline-variant rounded-DEFAULT flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">All systems operational.</span>
+</div>
+</section>
+</main>
+<script>
+        // Micro-interactions
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            const btn = this;
+            const icon = btn.querySelector('.material-symbols-outlined');
+            icon.classList.add('animate-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                const now = new Date();
+                document.getElementById('timestampDisplay').innerText = 
+                    now.toISOString().substring(11, 19) + ' UTC';
+            }, 800);
+        });
+
+        document.getElementById('statusToggle').addEventListener('change', function() {
+            document.getElementById('toggleLabel').innerText = this.checked ? 'Ready' : 'Paused';
+            const feedbackText = this.parentElement.parentElement.nextElementSibling.nextElementSibling.querySelector('.font-body-sm');
+            const feedbackIcon = this.parentElement.parentElement.nextElementSibling.nextElementSibling.querySelector('.material-symbols-outlined');
+            
+            if(this.checked) {
+                feedbackText.innerText = "All systems operational.";
+                feedbackIcon.innerText = "check_circle";
+                feedbackIcon.classList.replace('text-error', 'text-tertiary');
+            } else {
+                feedbackText.innerText = "Local state paused. Monitoring suspended.";
+                feedbackIcon.innerText = "pause_circle";
+                feedbackIcon.classList.replace('text-tertiary', 'text-error');
+            }
+        });
+    </script>
+</body></html>
