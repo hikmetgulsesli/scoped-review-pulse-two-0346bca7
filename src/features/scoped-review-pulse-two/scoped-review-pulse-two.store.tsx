@@ -77,48 +77,56 @@ export function ScopedReviewStoreProvider({
     onStateChangeRef.current = onStateChange;
   }, [onStateChange]);
 
-  const initialSnapshot = useMemo(() => {
-    const loaded = repoRef.current.load();
-    if (loaded.lastError !== null) {
-      return {
-        state: {
-          ...buildInitialState(loaded),
-          storageStatus: "error" as const,
-          lastError: loaded.lastError,
-        },
-        recovered: loaded.recovered,
-      };
-    }
-    return { state: buildInitialState(loaded), recovered: loaded.recovered };
-  }, []);
-
   const [state, setState] = useState<ScopedReviewState>(() => {
-    const items = initialItems ?? fixtureItems;
-    const prefs = initialPreferences ?? initialSnapshot.state.preferences;
+    const loaded = repoRef.current.load();
+    const baseState = buildInitialState(loaded);
+    const items = initialItems ?? baseState.items;
     return {
-      ...initialSnapshot.state,
+      ...baseState,
       items,
-      itemCount: computeItemCount(items),
-      preferences: prefs,
+      itemCount: initialItems ? computeItemCount(initialItems) : baseState.itemCount,
+      preferences: initialPreferences ?? baseState.preferences,
     };
   });
+
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+    const result = repoRef.current.save(
+      buildSnapshot(state.preferences, state.selectedItemId, state.activePanel),
+    );
+    if (!result.ok) {
+      setState((prev) => {
+        if (prev.storageStatus === "error" && prev.lastError === result.reason) {
+          return prev;
+        }
+        return {
+          ...prev,
+          storageStatus: "error",
+          lastError: result.reason,
+        };
+      });
+    } else {
+      setState((prev) => {
+        if (prev.storageStatus === "error") {
+          return {
+            ...prev,
+            storageStatus: "ready",
+            lastError: null,
+          };
+        }
+        return prev;
+      });
+    }
+  }, [state.preferences, state.selectedItemId, state.activePanel]);
 
   useEffect(() => {
     onStateChangeRef.current?.(state);
   }, [state]);
-
-  const persist = useCallback((next: ScopedReviewState) => {
-    const result = repoRef.current.save(
-      buildSnapshot(next.preferences, next.selectedItemId, next.activePanel),
-    );
-    if (!result.ok) {
-      setState((prev) => ({
-        ...prev,
-        storageStatus: "error",
-        lastError: result.reason,
-      }));
-    }
-  }, []);
 
   const refresh = useCallback(() => {
     setState((prev) => {
@@ -146,11 +154,9 @@ export function ScopedReviewStoreProvider({
     setState((prev) => {
       const firstId = prev.items[0]?.id ?? null;
       if (firstId === prev.selectedItemId) return prev;
-      const next: ScopedReviewState = { ...prev, selectedItemId: firstId };
-      persist(next);
-      return next;
+      return { ...prev, selectedItemId: firstId };
     });
-  }, [persist]);
+  }, []);
 
   const setActivePanel = useCallback(() => {
     setState((prev) => {
@@ -158,39 +164,29 @@ export function ScopedReviewStoreProvider({
       const idx = order.indexOf(prev.activePanel);
       const nextPanel = order[(idx + 1) % order.length] ?? DEFAULT_ACTIVE_PANEL;
       if (nextPanel === prev.activePanel) return prev;
-      const next: ScopedReviewState = { ...prev, activePanel: nextPanel };
-      persist(next);
-      return next;
+      return { ...prev, activePanel: nextPanel };
     });
-  }, [persist]);
+  }, []);
 
   const toggleInstant = useCallback(() => {
-    setState((prev) => {
-      const next: ScopedReviewState = {
-        ...prev,
-        preferences: {
-          ...prev.preferences,
-          instantToggle: !prev.preferences.instantToggle,
-        },
-      };
-      persist(next);
-      return next;
-    });
-  }, [persist]);
+    setState((prev) => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        instantToggle: !prev.preferences.instantToggle,
+      },
+    }));
+  }, []);
 
   const toggleAutoRefresh = useCallback(() => {
-    setState((prev) => {
-      const next: ScopedReviewState = {
-        ...prev,
-        preferences: {
-          ...prev.preferences,
-          autoRefresh: !prev.preferences.autoRefresh,
-        },
-      };
-      persist(next);
-      return next;
-    });
-  }, [persist]);
+    setState((prev) => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        autoRefresh: !prev.preferences.autoRefresh,
+      },
+    }));
+  }, []);
 
   const actions = useMemo<Record<ScopedReviewActionId, () => void>>(
     () => ({

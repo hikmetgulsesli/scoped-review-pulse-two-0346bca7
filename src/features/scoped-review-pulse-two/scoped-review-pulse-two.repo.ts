@@ -87,9 +87,17 @@ export const createLocalStorageRepo = (
   storageKey: string = STORAGE_KEY,
   fallback: ScopedReviewPersistedSnapshot = fixturePersistedSnapshot,
 ): ScopedReviewRepo => {
-  const hasWindow = (): boolean =>
-    typeof globalThis !== "undefined" &&
-    typeof (globalThis as { localStorage?: Storage }).localStorage !== "undefined";
+  const hasWindow = (): boolean => {
+    try {
+      return (
+        typeof globalThis !== "undefined" &&
+        typeof (globalThis as { localStorage?: Storage }).localStorage !== "undefined" &&
+        (globalThis as { localStorage?: Storage }).localStorage !== null
+      );
+    } catch {
+      return false;
+    }
+  };
 
   const readStorage = (): string | null => {
     if (!hasWindow()) return null;
