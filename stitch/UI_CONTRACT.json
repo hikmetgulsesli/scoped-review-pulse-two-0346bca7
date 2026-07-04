@@ -1,0 +1,40 @@
+[
+  {
+    "screenId": "36ee81769d7a41e8958eb3389a3d2031",
+    "screenTitle": "Status Utility - Scoped Review Pulse Two",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "refreshBtn",
+        "line": 169
+      },
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 163
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "refreshBtn",
+        "line": 169
+      }
+    ],
+    "inputs": [
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 163
+      }
+    ],
+    "hardcodedData": [],
+    "totalInteractive": 2,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]
